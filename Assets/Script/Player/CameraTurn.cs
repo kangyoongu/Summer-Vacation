@@ -2,28 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class CameraTurn : MonoBehaviour
 {
-    public float camSpeed = 9.0f;
     public Transform player;
     private float yaw = 0.0f;
     private float pitch = 0.0f;
     public Transform cam;
     public LayerMask layer;
     public Transform gunaim;
+    public Slider slider;
     void Start()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        if (!PlayerPrefs.HasKey("Sens"))
+        {
+            PlayerPrefs.SetFloat("Sens", 4f);
+        }
+        slider.value = PlayerPrefs.GetFloat("Sens");
     }
 
     void Update()
     {
         if (GameManager.Instance.isPlay)
         {
-            yaw = camSpeed * Input.GetAxis("Mouse X");
-            pitch += camSpeed * Input.GetAxis("Mouse Y");
+            yaw = PlayerPrefs.GetFloat("Sens") * Input.GetAxis("Mouse X");
+            pitch += PlayerPrefs.GetFloat("Sens") * Input.GetAxis("Mouse Y");
 
             pitch = Mathf.Clamp(pitch, -70f, 90f);
 
@@ -41,5 +47,9 @@ public class CameraTurn : MonoBehaviour
                 gunaim.position = transform.forward * 500;
             }
         }
+    }
+    public void SetSens(float value)
+    {
+        PlayerPrefs.SetFloat("Sens", value);
     }
 }
